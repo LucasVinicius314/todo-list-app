@@ -3,7 +3,12 @@ import 'react-native-gesture-handler'
 import * as React from 'react'
 
 import { AntDesign, Feather } from '@expo/vector-icons'
-import { FAB, Headline, List, TouchableRipple } from 'react-native-paper'
+import {
+  FAB,
+  Headline,
+  List,
+  TouchableRipple,
+} from 'react-native-paper'
 import {
   SafeAreaView,
   ScrollView,
@@ -22,7 +27,7 @@ const { log } = console
 export default class Todos extends React.Component {
   static contextType = AppContext
 
-  componentDidMount = this.getTodos
+  componentDidMount = () => this.getTodos()
 
   getTodos = () => this.context.setters.getTodos()
 

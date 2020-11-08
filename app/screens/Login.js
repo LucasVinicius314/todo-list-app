@@ -3,12 +3,15 @@ import 'react-native-gesture-handler'
 import * as React from 'react'
 
 import {
-  Alert,
+  Button,
+  Headline,
+  TextInput,
+} from 'react-native-paper'
+import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
 } from 'react-native'
-import { Button, Headline, TextInput } from 'react-native-paper'
 
 import Api from '../Api'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -19,8 +22,8 @@ const { log } = console
 
 export default class Login extends React.Component {
   state = {
-    email: 'sure@sure.com',
-    password: '1234',
+    email: '',
+    password: '',
   }
 
   setEmail = email => this.setState({ email })
@@ -51,6 +54,7 @@ export default class Login extends React.Component {
             style={styles.textInput}
             label="Email"
             mode='outlined'
+            textContentType='emailAddress'
             value={email}
             onChangeText={setEmail}
           />
@@ -58,6 +62,7 @@ export default class Login extends React.Component {
             style={styles.textInput}
             label="Password"
             mode='outlined'
+            textContentType='password'
             value={password}
             secureTextEntry={true}
             onChangeText={setPassword}
@@ -102,5 +107,5 @@ const styles = StyleSheet.create({
   },
   btn: {
     marginVertical: 10,
-  }
+  },
 })

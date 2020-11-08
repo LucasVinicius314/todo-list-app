@@ -2,7 +2,6 @@ import 'react-native-gesture-handler'
 
 import * as React from 'react'
 
-import Colors from '../Colors'
 import Login from '../screens/Login'
 import NewTodo from '../screens/NewTodo'
 import SignIn from '../screens/SignIn'

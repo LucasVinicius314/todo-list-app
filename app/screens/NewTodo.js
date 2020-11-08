@@ -41,11 +41,17 @@ export default class NewTodo extends React.Component {
       .catch(e => alert(e.response.data.message))
   }
 
-  setTitle = title => this.setState({ title }) || this.validate()
+  setTitle = title => this.setState({ title }) || this.validate({ title })
 
-  setText = text => this.setState({ text }) || this.validate()
+  setText = text => this.setState({ text }) || this.validate({ text })
 
-  validate = () => this.setState({ validated: this.state.title.length > 0 && this.state.text.length > 0 })
+  validate = ({ title, text }) => {
+    title = title || this.state.title
+    text = text || this.state.text
+    title = title.trim()
+    text = text.trim()
+    this.setState({ validated: title.length > 0 && text.length > 0 })
+  }
 
   goBack = () => this.props.navigation.goBack()
 
@@ -69,6 +75,7 @@ export default class NewTodo extends React.Component {
           />
           <TextInput
             style={styles.textInput}
+            multiline={true}
             label="Text"
             mode='outlined'
             value={text}

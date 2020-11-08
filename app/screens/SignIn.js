@@ -2,14 +2,21 @@ import 'react-native-gesture-handler'
 
 import * as React from 'react'
 
-import { Button, Headline, TextInput } from 'react-native-paper'
+import {
+  Button,
+  FAB,
+  Headline,
+  TextInput,
+} from 'react-native-paper'
 import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
 } from 'react-native'
 
+import Api from '../Api'
 import Colors from '../Colors'
+import { Ionicons } from '@expo/vector-icons'
 import Statusbar from '../components/StatusBar'
 
 export default class SignIn extends React.Component {
@@ -25,20 +32,33 @@ export default class SignIn extends React.Component {
 
   setPassword = password => this.setState({ password })
 
-  request = () => null
+  create = async () => {
+    const { name, email, password } = this.state
+    Api.post('/user/create', { name, email, password })
+      .then(({ data }) => {
+        alert(data.message)
+      })
+      .catch(e => alert(e.response.data.message))
+  }
+
+  goBack = () => this.props.navigation.goBack()
 
   render = () => {
     const { email, password, name } = this.state
-    const { setEmail, setPassword, setName } = this
+    const { setEmail, setPassword, setName, create, goBack } = this
     return (
       <SafeAreaView style={styles.safeAreaView}>
         <Statusbar backgroundColor={Colors.white} barStyle='dark-content' />
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
           <Headline style={styles.headline}>Create Account</Headline>
+          <FAB color='black' icon='arrow-left' style={styles.back} onPress={goBack}>
+            <Ionicons name="ios-arrow-back" size={26} color="black" />
+          </FAB>
           <TextInput
             style={styles.textInput}
             label="Name"
             mode='outlined'
+            textContentType='name'
             value={name}
             onChangeText={setName}
           />
@@ -46,6 +66,7 @@ export default class SignIn extends React.Component {
             style={styles.textInput}
             label="Email"
             mode='outlined'
+            textContentType='emailAddress'
             value={email}
             onChangeText={setEmail}
           />
@@ -53,14 +74,15 @@ export default class SignIn extends React.Component {
             style={styles.textInput}
             label="Password"
             mode='outlined'
+            textContentType='password'
+            secureTextEntry={true}
             value={password}
             onChangeText={setPassword}
           />
           <Button
             style={styles.btn}
-            icon="login"
             mode="contained"
-            onPress={this.request}>Create</Button>
+            onPress={create}>Create</Button>
         </ScrollView>
       </SafeAreaView>
     )
@@ -91,5 +113,13 @@ const styles = StyleSheet.create({
   },
   btn: {
     marginVertical: 10,
-  }
+  },
+  back: {
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    margin: 16,
+  },
 })

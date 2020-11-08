@@ -3,7 +3,11 @@ import 'react-native-gesture-handler'
 import * as Font from 'expo-font'
 import * as React from 'react'
 
-import { DefaultTheme, Provider as PaperProvider, configureFonts } from 'react-native-paper'
+import {
+  DefaultTheme,
+  Provider as PaperProvider,
+  configureFonts,
+} from 'react-native-paper'
 
 import Api from './Api'
 import AppContext from './AppContext'
