@@ -2,14 +2,16 @@ import 'react-native-gesture-handler'
 
 import * as React from 'react'
 
-import { Button, Headline, TextInput } from 'react-native-paper'
 import {
+  Alert,
   SafeAreaView,
   ScrollView,
   StyleSheet,
 } from 'react-native'
+import { Button, Headline, TextInput } from 'react-native-paper'
 
 import Api from '../Api'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import Colors from '../Colors'
 import Statusbar from '../components/StatusBar'
 
@@ -17,8 +19,8 @@ const { log } = console
 
 export default class Login extends React.Component {
   state = {
-    email: '',
-    password: '',
+    email: 'sure@sure.com',
+    password: '1234',
   }
 
   setEmail = email => this.setState({ email })
@@ -30,8 +32,11 @@ export default class Login extends React.Component {
   request = () => {
     const { email, password } = this.state
     Api.post('/user/login', { email, password })
-      .then(log)
-      .catch(log)
+      .then(async d => {
+        await AsyncStorage.setItem('token', d.data.token)
+        this.props.navigation.navigate('Todos')
+      })
+      .catch(e => alert(e.response.data.message))
   }
 
   render = () => {
@@ -54,6 +59,7 @@ export default class Login extends React.Component {
             label="Password"
             mode='outlined'
             value={password}
+            secureTextEntry={true}
             onChangeText={setPassword}
           />
           <Button

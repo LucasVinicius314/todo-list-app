@@ -5,6 +5,9 @@ import * as React from 'react'
 
 import { DefaultTheme, Provider as PaperProvider, configureFonts } from 'react-native-paper'
 
+import Api from './Api'
+import AppContext from './AppContext'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import Colors from './Colors'
 import { NavigationContainer } from '@react-navigation/native'
 import Stack from './navigation/Stack'
@@ -42,9 +45,19 @@ const theme = {
   roundness: 10,
 }
 
+const { log } = console
+
 export default class App extends React.Component {
   state = {
     loading: true,
+    todos: [],
+    setters: {
+      getTodos: async () => {
+        Api.post('/todo/all', {}, { headers: { 'token': await AsyncStorage.getItem('token') } })
+          .then(async ({ data }) => this.setState({ todos: data.todos }))
+          .catch(e => alert(e.response.data.message))
+      },
+    },
   }
 
   componentDidMount = () => {
@@ -76,9 +89,11 @@ export default class App extends React.Component {
     if (this.state.loading) return null
     return (
       <PaperProvider theme={theme}>
-        <NavigationContainer>
-          <Stack />
-        </NavigationContainer>
+        <AppContext.Provider value={this.state}>
+          <NavigationContainer>
+            <Stack />
+          </NavigationContainer>
+        </AppContext.Provider>
       </PaperProvider>
     )
   }

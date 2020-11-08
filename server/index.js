@@ -2,6 +2,8 @@ require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const mysql = require('mysql')
+const jwt = require('jsonwebtoken')
+const basicAuth = require('express-basic-auth')
 const cors = require('cors')
 
 const app = express()
@@ -44,13 +46,26 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
+app.use(basicAuth({
+  users: { 'todo': '1234' },
+  unauthorizedResponse: { message: 'Unauthorized' },
+}))
+
+const verifyJWT = (req, res, next) => {
+  const token = req.headers['token']
+  if (!token) return res.status(401).json({ message: 'No token provided' })
+  jwt.verify(token, process.env.SECRET, (err, decoded) => {
+    if (err) return res.status(403).json({ message: 'Failed to authenticate token' })
+    req.user = decoded
+    next()
+  })
+}
+
 app.use('/', (req, res, next) => {
   log('/')
   res.contentType('application/json')
   next()
 })
-
-//app.post('/', (req, res) => res.send({ message: 'yes' }))
 
 app.post('/user/login', (req, res) => {
   log('/user/login')
@@ -59,12 +74,85 @@ app.post('/user/login', (req, res) => {
     if (!email) throw 'Invalid email'
     if (!password) throw 'Invalid password'
     queryOne('select * from user where email = ? and password = sha1(?)', [email, password])
-      .then(log)
-      .catch(log)
+      .then(d => {
+        if (d === undefined) throw 'Auth failed'
+        const token = jwt.sign({ ...d }, process.env.SECRET, {
+          expiresIn: 300,
+        })
+        res.status(200).json({ token: token })
+      })
+      .catch(e => {
+        log(e)
+        res.status(400).json({ message: e })
+      })
   } catch (e) {
     log(e)
-    res.status(400).send({ message: e })
+    res.status(400).json({ message: e })
   }
+})
+
+app.post('/todo/all', verifyJWT, (req, res) => {
+  const user_id = req.user.id
+  queryAll('select * from todo where user_id = ? order by favorite asc', [user_id])
+    .then(d => {
+      res.status(200).json({ todos: d })
+    })
+    .catch(e => {
+      log(e)
+      res.status(400).json({ message: e })
+    })
+})
+
+app.post('/todo/favorite', verifyJWT, (req, res) => {
+  const user_id = req.user.id
+  const { id } = req.body
+  query('update todo set favorite = \'true\' where user_id = ? and id = ?', [user_id, id])
+    .then(d => {
+      res.status(200).json({ message: 'Favorited' })
+    })
+    .catch(e => {
+      log(e)
+      res.status(400).json({ message: e })
+    })
+})
+
+app.post('/todo/unfavorite', verifyJWT, (req, res) => {
+  const user_id = req.user.id
+  const { id } = req.body
+  query('update todo set favorite = \'false\' where user_id = ? and id = ?', [user_id, id])
+    .then(d => {
+      res.status(200).json({ message: 'Unfavorited' })
+    })
+    .catch(e => {
+      log(e)
+      res.status(400).json({ message: e })
+    })
+})
+
+app.post('/todo/delete', verifyJWT, (req, res) => {
+  const user_id = req.user.id
+  const { id } = req.body
+  query('delete from todo where user_id = ? and id = ?', [user_id, id])
+    .then(d => {
+      res.status(200).json({ message: 'Deleted' })
+    })
+    .catch(e => {
+      log(e)
+      res.status(400).json({ message: e })
+    })
+})
+
+app.post('/todo/create', verifyJWT, (req, res) => {
+  const user_id = req.user.id
+  const { title, text } = req.body
+  query('insert into todo (title, text, user_id) values (?, ?, ?)', [title, text, user_id])
+    .then(d => {
+      res.status(201).json({ message: 'Created' })
+    })
+    .catch(e => {
+      log(e)
+      res.status(400).json({ message: e })
+    })
 })
 
 app.listen(process.env.PORT, () => log(`Listening on port ${process.env.PORT}`))
