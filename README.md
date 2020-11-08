@@ -24,13 +24,13 @@ This will start up the server.
 ## Environment variables
 
 
-> ```PORT``` - port used by the server (for example, 5000)
-> ```SECRET``` - secret used to sign the web token (for example, myawesomesecret)
-> ```DB_HOST``` - mysql database host address (a remote or local address, for example, localhost)
-> ```DB_USER``` - mysql database user
-> ```DB_PASSWORD``` - mysql database password
-> ```DB_NAME``` - mysql database name (for example, todolist)
-> ```DB_PORT``` - mysql database port
+> ```PORT``` - port used by the server (for example, 5000) <br>
+> ```SECRET``` - secret used to sign the web token (for example, myawesomesecret) <br>
+> ```DB_HOST``` - mysql database host address (a remote or local address, for example, localhost) <br>
+> ```DB_USER``` - mysql database user <br>
+> ```DB_PASSWORD``` - mysql database password <br>
+> ```DB_NAME``` - mysql database name (for example, todolist) <br>
+> ```DB_PORT``` - mysql database port <br>
 
 # App
 
