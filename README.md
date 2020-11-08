@@ -45,3 +45,13 @@ This will install all the required modules for running the app.
 > yarn app
 
 This will start up the app using expo.
+
+# Images
+
+![Todos](https://github.com/LucasVinicius314/todo-list-app/blob/main/images/Todos.jpg "Todos")
+
+![Create Account](https://github.com/LucasVinicius314/todo-list-app/blob/main/images/CreateAccount.jpg "Create Account")
+
+![Login](https://github.com/LucasVinicius314/todo-list-app/blob/main/images/Login.jpg "Login")
+
+![NewTodo](https://github.com/LucasVinicius314/todo-list-app/blob/main/images/NewTodo.jpg "NewTodo")
