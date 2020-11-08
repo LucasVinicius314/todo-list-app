@@ -1,0 +1,12 @@
+{
+  "name": "todo-list-app",
+  "version": "1.0.0",
+  "main": "server/index.js",
+  "repository": "https://github.com/LucasVinicius314/todo-list-app.git",
+  "author": "Lucas Coelho <58010418+LucasVinicius314@users.noreply.github.com>",
+  "license": "MIT",
+  "scripts": {
+    "app": "cd app && yarn start",
+    "server": "cd server && yarn start"
+  }
+}
