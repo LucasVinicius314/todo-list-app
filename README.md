@@ -4,7 +4,7 @@ Simple todo list app with a NodeJS backend and a React Native app.
 
 # Introduction
 
-An ap and a server for a simple todo list app.
+An app and a server for a simple todo list app.
 The backend is made with [Express.js](https://expressjs.com/) and the app is made with [React Native](https://reactnative.dev/), using [Expo](https://expo.io/).
 
 # Server
